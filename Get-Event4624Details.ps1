@@ -30,13 +30,13 @@ function get-Event4624Details
         $EventMessageProcessInformationRegex = "Process Information:\r\n\tProcess ID:\s+(?<ProcessInfo_processId>0x[0-9a-f]+)\r\n\tProcess Name:\s+(?<ProcessInfo_ProcessName>[\w-\.\\:]+)"
         $EventMessageNetworkInformationRegex = "Network Information:\r\n\tWorkstation Name:\s+(?<NetworkInfo_WorkstationName>[\w\-]*)\r\n\tSource Network Address:\s+(?<NetworkInfo_NetworkAddress>[\-a-f:0-9\.]+)\r\n\tSource Port:\s+(?<NetworkInfo_SourcePort>[\-0-9]+)"
         $EventMessageDetailedAuthenticationInformation = "Detailed Authentication Information:\r\n\tLogon Process:\s+(?<AuthInfo_LogonProcess>\w+)\r\n\tAuthentication Package:\s+(?<AuthInfo_AuthPackage>\w+)\r\n\tTransited Services:\s+(?<AuthInfo_TransitedServices>\w+)\r\n\tPackage Name (NTLM only):\s+(?<AuthInfo_PackageName>\w+)\r\n\tKey Length:\s+(?<AuthInfo_KeyLength>\d+..)"
-        $EventMessageRegex = "An account was successfully logged on.\s*$EventMessageSubjectRegEx\s*$EventMessageLogonTypeRegEx\s*$EventMessageNewLogonRegex\s*$EventMessageProcessInformationRegex\s*$EventMessageNetworkInformationRegex"
+        $EventMessageRegex = "An account was successfully logged on.\s*$EventMessageSubjectRegEx\s*$EventMessageLogonTypeRegEx\s*(Impersonation Level:\s*[%\d]+\s*)$EventMessageNewLogonRegex\s*$EventMessageProcessInformationRegex\s*$EventMessageNetworkInformationRegex"
     }
     Process
     {
         foreach ($Entry in $Event)
         {
-            <#
+<#           
             write-host -fore yellow "$($Entry.Index)"
 
             if ($Entry.message -match $EventMessageSubjectRegEx)
@@ -102,7 +102,7 @@ function get-Event4624Details
             {
                 write-host -fore red -back black 'EventMessageRegex'
             }
-            #>
+             #>
 
             $matches = $null
             $Entry.message -match $EventMessageRegex | Out-Null
@@ -132,5 +132,3 @@ function get-Event4624Details
     {
     }
 }
-
-
